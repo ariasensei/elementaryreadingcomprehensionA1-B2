@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aria's Learning Hub - Reading Comprehension</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .lesson-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-align: left;
+        }
+        
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .lesson-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .lesson-card p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+        
+        .lesson-level {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .lesson-content {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        .lesson-content.active {
+            display: block;
+        }
+        
+        .timer {
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(232, 67, 147, 0.3);
+        }
+        
+        .story-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .story-title {
+            color: #2d3436;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .story-text {
+            line-height: 1.8;
+            font-size: 1.1em;
+            color: #2d3436;
+            text-align: justify;
+        }
+        
+        .vocabulary-section {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .vocabulary-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .vocab-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .vocab-word {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .vocab-definition {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .questions-section {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .questions-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .question {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .options {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .option {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .option.selected {
+            border-color: #fdcb6e;
+            background: rgba(253, 203, 110, 0.3);
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #636e72, #2d3436);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .footer {
+            background: #2d3436;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+        
+        .footer a {
+            color: #74b9ff;
+            text-decoration: none;
+        }
+        
+        .progress-bar {
+            background: #ddd;
+            border-radius: 10px;
+            height: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Aria's Learning Hub 🌟</h1>
+            <p>Elementary Students A1-B2 Reading Comprehension</p>
+        </div>
+        
+        <div class="main-content">
+            <div id="lesson-overview">
+                <h2 style="text-align: center; color: #2d3436; margin-bottom: 30px; font-size: 2em;">📚 20 Lesson Curriculum 📚</h2>
+                
+                <div class="lesson-grid">
+                    <button class="lesson-card" onclick="openLesson(1)">
+                        <h3>🐉 Lesson 1: The Brave Little Dragon</h3>
+                        <p>A young dragon learns about courage and friendship</p>
+                        <span class="lesson-level">Level: A1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(2)">
+                        <h3>🌙 Lesson 2: The Moon's Secret</h3>
+                        <p>Luna discovers why the moon changes shape</p>
+                        <span class="lesson-level">Level: A1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(3)">
+                        <h3>🦋 Lesson 3: The Magic Garden</h3>
+                        <p>A girl finds a garden where flowers grant wishes</p>
+                        <span class="lesson-level">Level: A1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(4)">
+                        <h3>🏰 Lesson 4: The Kind King's Lesson</h3>
+                        <p>A king learns the value of listening to his people</p>
+                        <span class="lesson-level">Level: A2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(5)">
+                        <h3>🌊 Lesson 5: The Ocean's Gift</h3>
+                        <p>A fisherman's daughter saves a magical sea creature</p>
+                        <span class="lesson-level">Level: A2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(6)">
+                        <h3>⭐ Lesson 6: The Star Collector</h3>
+                        <p>A boy who collects fallen stars learns about sharing</p>
+                        <span class="lesson-level">Level: A2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(7)">
+                        <h3>🦅 Lesson 7: The Eagle's Wisdom</h3>
+                        <p>A young eagle learns to overcome fear of heights</p>
+                        <span class="lesson-level">Level: A2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(8)">
+                        <h3>🎭 Lesson 8: The Theater of Dreams</h3>
+                        <p>Children discover a theater where dreams come alive</p>
+                        <span class="lesson-level">Level: B1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(9)">
+                        <h3>🌈 Lesson 9: The Rainbow Bridge</h3>
+                        <p>A girl builds bridges between different communities</p>
+                        <span class="lesson-level">Level: B1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(10)">
+                        <h3>🔮 Lesson 10: The Crystal of Truth</h3>
+                        <p>A prince learns the importance of honesty</p>
+                        <span class="lesson-level">Level: B1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(11)">
+                        <h3>🌸 Lesson 11: The Cherry Blossom Festival</h3>
+                        <p>A story about tradition, change, and acceptance</p>
+                        <span class="lesson-level">Level: B1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(12)">
+                        <h3>🎨 Lesson 12: The Artist's Magic Brush</h3>
+                        <p>A young artist's paintings come to life</p>
+                        <span class="lesson-level">Level: B1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(13)">
+                        <h3>🏔️ Lesson 13: The Mountain's Challenge</h3>
+                        <p>A climber learns about perseverance and teamwork</p>
+                        <span class="lesson-level">Level: B1</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(14)">
+                        <h3>🎪 Lesson 14: The Traveling Circus</h3>
+                        <p>A shy girl finds her confidence in the circus</p>
+                        <span class="lesson-level">Level: B2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(15)">
+                        <h3>🌍 Lesson 15: The Time Traveler's Diary</h3>
+                        <p>A student learns about different cultures through time</p>
+                        <span class="lesson-level">Level: B2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(16)">
+                        <h3>🔬 Lesson 16: The Young Inventor</h3>
+                        <p>A girl's invention helps solve her town's problems</p>
+                        <span class="lesson-level">Level: B2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(17)">
+                        <h3>🎵 Lesson 17: The Symphony of Nature</h3>
+                        <p>A musician learns to hear music in everyday sounds</p>
+                        <span class="lesson-level">Level: B2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(18)">
+                        <h3>📚 Lesson 18: The Library Guardian</h3>
+                        <p>A librarian protects magical books from disappearing</p>
+                        <span class="lesson-level">Level: B2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(19)">
+                        <h3>🌟 Lesson 19: The Constellation Maker</h3>
+                        <p>An astronomer creates new constellations for hope</p>
+                        <span class="lesson-level">Level: B2</span>
+                    </button>
+                    
+                    <button class="lesson-card" onclick="openLesson(20)">
+                        <h3>🎓 Lesson 20: The Graduation Gift</h3>
+                        <p>Students learn the greatest lesson of all</p>
+                        <span class="lesson-level">Level: B2</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="lesson-content" class="lesson-content">
+                <button class="back-btn" onclick="backToOverview()">← Back to Lessons</button>
+                
+                <div class="timer" id="timer">
+                    ⏰ Time Remaining: 25:00
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+                
+                <div class="story-section">
+                    <h2 class="story-title" id="story-title"></h2>
+                    <div class="story-text" id="story-text"></div>
+                </div>
+                
+                <div class="vocabulary-section">
+                    <h3>📖 New Vocabulary</h3>
+                    <div class="vocab-grid" id="vocabulary"></div>
+                </div>
+                
+                <div class="questions-section">
+                    <h3>🤔 Comprehension Questions</h3>
+                    <div id="questions"></div>
+                    <button onclick="checkAnswers()" style="background: #fdcb6e; color: #2d3436; border: none; padding: 15px 30px; border-radius: 25px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 20px; transition: all 0.3s ease;">Check Answers</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Made by Aria. Teaching Since 2014</p>
+            <p>Website: <a href="https://ariasensei.github.io/teacheraria/" target="_blank">https://ariasensei.github.io/teacheraria/</a></p>
+        </div>
+    </div>
+
+    <script>
+        let currentLesson = 1;
+        let timerInterval;
+        let timeLeft = 1500; // 25 minutes in seconds
+        let selectedAnswers = {};
+
+        const lessons = {
+            1: {
+                title: "The Brave Little Dragon",
+                story: `Once upon a time, in a magical kingdom high in the mountains, there lived a little dragon named Spark. Unlike other dragons who were big and fierce, Spark was small and gentle. He had bright green scales that shimmered in the sunlight and kind golden eyes.
+
+All the other dragons could breathe fire and fly high in the sky, but Spark was different. When he tried to breathe fire, only small puffs of smoke came out. When he tried to fly, he could barely lift off the ground. This made Spark feel very sad and lonely.
+
+One day, a terrible storm hit the kingdom. The wind was so strong that it blew away all the bridges connecting the mountain villages. The people were trapped and couldn't get food or help. The big dragons tried to help, but their fire was too hot and dangerous for the wooden houses.
+
+Spark saw the people in trouble and wanted to help. Even though he was small, he had a big heart. He flew from village to village, using his gentle puffs of smoke to send messages between the people. His small size allowed him to fly safely between the houses without causing damage.
+
+Thanks to Spark's help, the villages could communicate and work together to rebuild their bridges. The people cheered for the brave little dragon who had saved them all. Spark learned that being different wasn't something to be sad about – it was his special gift that made him a hero.`,
+                vocabulary: [
+                    { word: "fierce", definition: "very aggressive or violent" },
+                    { word: "shimmered", definition: "shone with a soft, flickering light" },
+                    { word: "puffs", definition: "small amounts of air or smoke" },
+                    { word: "trapped", definition: "unable to escape or get out" },
+                    { word: "communicate", definition: "to share information or talk with others" }
+                ],
+                questions: [
+                    {
+                        question: "What made Spark different from other dragons?",
+                        options: ["He was small and gentle", "He was very tall", "He was mean", "He lived in the ocean"],
+                        correct: 0
+                    },
+                    {
+                        question: "What happened during the terrible storm?",
+                        options: ["The dragons got sick", "All bridges were blown away", "The mountains disappeared", "The sun stopped shining"],
+                        correct: 1
+                    },
+                    {
+                        question: "How did Spark help the villages?",
+                        options: ["He built new bridges", "He carried people on his back", "He sent messages with smoke puffs", "He brought them food"],
+                        correct: 2
+                    },
+                    {
+                        question: "What lesson did Spark learn?",
+                        options: ["Big dragons are better", "Being different is a gift", "Flying is not important", "Storms are dangerous"],
+                        correct: 1
+                    },
+                    {
+                        question: "Why couldn't the big dragons help effectively?",
+                        options: ["They were too lazy", "Their fire was too dangerous", "They couldn't fly", "They were afraid"],
+                        correct: 1
+                    }
+                ]
+            },
+            2: {
+                title: "The Moon's Secret",
+                story: `Luna was a curious eight-year-old girl who loved looking at the night sky. Every evening, she would sit by her bedroom window and watch the moon. But there was something that puzzled her greatly – why did the moon change its shape every night?
+
+Sometimes the moon was round and bright like a silver coin. Other nights, it looked like a banana or completely disappeared. Luna asked her parents, her teachers, and even her grandmother, but no one could give her a satisfying answer.
+
+One magical evening, as Luna was gazing at a crescent moon, something extraordinary happened. The moon began to glow brighter and brighter until a gentle voice spoke to her: "Hello, Luna. I've been watching you watch me every night."
+
+Luna couldn't believe her ears! "You can talk?" she whispered in amazement.
+
+"Yes, dear child," replied the moon with a warm, silvery voice. "I've decided to share my secret with you because you've been so patient and curious. You see, I don't actually change shape. I'm always round, but the sun's light hits me differently as I travel around your Earth."
+
+The moon explained how sometimes the sun lights up all of her face, making her appear full and round. Other times, the sun only lights up part of her, making her look like a crescent or half-circle. And sometimes, when she's between the Earth and sun, she appears to disappear completely.
+
+"It's like a cosmic dance," the moon said gently. "The sun, Earth, and I are always moving, creating this beautiful pattern of light and shadow that you see from your window."
+
+Luna was fascinated. From that night on, she understood the moon's secret and felt a special connection to her celestial friend. She became known in her school as the "Moon Expert" and loved sharing this magical knowledge with her classmates.`,
+                vocabulary: [
+                    { word: "puzzled", definition: "confused or unable to understand" },
+                    { word: "crescent", definition: "a curved shape like a banana or the letter C" },
+                    { word: "extraordinary", definition: "very unusual or remarkable" },
+                    { word: "celestial", definition: "relating to the sky or heavens" },
+                    { word: "cosmic", definition: "relating to the universe or outer space" }
+                ],
+                questions: [
+                    {
+                        question: "What puzzled Luna about the moon?",
+                        options: ["Why it was so bright", "Why it changed shape", "Why it only came at night", "Why it was silver"],
+                        correct: 1
+                    },
+                    {
+                        question: "When did the moon start talking to Luna?",
+                        options: ["During a full moon", "During a crescent moon", "During a new moon", "During an eclipse"],
+                        correct: 1
+                    },
+                    {
+                        question: "According to the moon, why does it appear to change shape?",
+                        options: ["It actually does change shape", "The sun's light hits it differently", "Clouds cover parts of it", "It moves closer and farther away"],
+                        correct: 1
+                    },
+                    {
+                        question: "What did the moon compare its movement to?",
+                        options: ["A magic trick", "A cosmic dance", "A game", "A race"],
+                        correct: 1
+                    },
+                    {
+                        question: "What happened to Luna after learning the moon's secret?",
+                        options: ["She stopped looking at the moon", "She became known as the Moon Expert", "She forgot about the moon", "She became afraid of the night"],
+                        correct: 1
+                    }
+                ]
+            }
+            // Additional lessons would continue here...
+        };
+
+        function openLesson(lessonNumber) {
+            currentLesson = lessonNumber;
+            document.getElementById('lesson-overview').style.display = 'none';
+            document.getElementById('lesson-content').classList.add('active');
+            
+            const lesson = lessons[lessonNumber];
+            if (lesson) {
+                loadLesson(lesson);
+                startTimer();
+            }
+        }
+
+        function loadLesson(lesson) {
+            document.getElementById('story-title').textContent = lesson.title;
+            document.getElementById('story-text').textContent = lesson.story;
+            
+            // Load vocabulary
+            const vocabContainer = document.getElementById('vocabulary');
+            vocabContainer.innerHTML = '';
+            lesson.vocabulary.forEach(vocab => {
+                const vocabItem = document.createElement('div');
+                vocabItem.className = 'vocab-item';
+                vocabItem.innerHTML = `
+                    <div class="vocab-word">${vocab.word}</div>
+                    <div class="vocab-definition">${vocab.definition}</div>
+                `;
+                vocabContainer.appendChild(vocabItem);
+            });
+            
+            // Load questions
+            const questionsContainer = document.getElementById('questions');
+            questionsContainer.innerHTML = '';
+            lesson.questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. ${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => 
+                            `<div class="option" onclick="selectAnswer(${index}, ${optIndex})" data-question="${index}" data-option="${optIndex}">
+                                ${String.fromCharCode(65 + optIndex)}. ${option}
+                            </div>`
+                        ).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+            
+            selectedAnswers = {};
+            updateProgress();
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            selectedAnswers[questionIndex] = optionIndex;
+            
+            // Remove previous selections for this question
+            const questionOptions = document.querySelectorAll(`[data-question="${questionIndex}"]`);
+            questionOptions.forEach(option => option.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            const selectedOption = document.querySelector(`[data-question="${questionIndex}"][data-option="${optionIndex}"]`);
+            selectedOption.classList.add('selected');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const lesson = lessons[currentLesson];
+            if (lesson) {
+                const totalQuestions = lesson.questions.length;
+                const answeredQuestions = Object.keys(selectedAnswers).length;
+                const progressPercent = (answeredQuestions / totalQuestions) * 100;
+                document.getElementById('progress').style.width = progressPercent + '%';
+            }
+        }
+
+        function checkAnswers() {
+            const lesson = lessons[currentLesson];
+            let correct = 0;
+            let total = lesson.questions.length;
+            
+            lesson.questions.forEach((q, index) => {
+                const userAnswer = selectedAnswers[index];
+                const correctAnswer = q.correct;
+                const questionOptions = document.querySelectorAll(`[data-question="${index}"]`);
+                
+                questionOptions.forEach((option, optIndex) => {
+                    if (optIndex === correctAnswer) {
+                        option.style.background = 'rgba(0, 184, 148, 0.8)'; // Green for correct
+                    } else if (optIndex === userAnswer && userAnswer !== correctAnswer) {
+                        option.style.background = 'rgba(231, 76, 60, 0.8)'; // Red for wrong
+                    }
+                });
+                
+                if (userAnswer === correctAnswer) {
+                    correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / total) * 100);
+            let message = `You got ${correct} out of ${total} questions correct (${percentage}%)!\n\n`;
+            
+            if (percentage >= 80) {
+                message += "🌟 Excellent work! You understood the story very well!";
+            } else if (percentage >= 60) {
+                message += "👍 Good job! Try reading the story again to improve your understanding.";
+            } else {
+                message += "📚 Keep practicing! Read the story once more and try again.";
+            }
+            
+            alert(message);
+        }
+
+        function startTimer() {
+            timeLeft = 1500; // Reset to 25 minutes
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("⏰ Time's up! Great job working on this lesson!");
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `⏰ Time Remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function backToOverview() {
+            clearInterval(timerInterval);
+            document.getElementById('lesson-overview').style.display = 'block';
+            document.getElementById('lesson-content').classList.remove('active');
+        }
+
+        // Initialize the first lesson data for demo
+        if (!lessons[3]) {
+            lessons[3] = {
+                title: "The Magic Garden",
+                story: `In a small village surrounded by rolling hills, there lived a young girl named Maya who had always felt different from other children. While her friends played games and laughed together, Maya preferred to spend her time alone, reading books under the old oak tree in her backyard.
+
+One afternoon, while exploring the forest behind her house, Maya discovered a hidden path covered with glowing flower petals. Curious and brave, she followed the path deeper into the woods until she came upon the most beautiful garden she had ever seen.
+
+The garden was filled with flowers of every color imaginable – roses that sparkled like diamonds, sunflowers that actually glowed like tiny suns, and tulips that chimed like bells when the wind touched them. In the center of the garden stood an ancient fountain with crystal-clear water that seemed to dance in the air.
+
+As Maya approached the fountain, she heard a gentle voice: "Welcome, dear child. This is the Garden of Wishes, where pure hearts can make their deepest dreams come true."
+
+Maya looked around but saw no one. "Who's speaking?" she asked softly.
+
+"I am the spirit of this garden," the voice replied. "For centuries, I have granted wishes to those who truly deserve them. But remember, the most powerful wishes are not for yourself, but for others."
+
+Maya thought carefully about what she wanted most. She could wish for popularity, or beauty, or riches. But then she remembered her elderly neighbor, Mrs. Chen, who had been sick for months and couldn't tend to her beloved garden anymore.
+
+"I wish for Mrs. Chen's garden to bloom again and for her to feel better," Maya said with all her heart.
+
+The garden began to glow brighter, and the spirit's voice filled with warmth: "Your selfless wish shows the true beauty of your heart, Maya. Your wish is granted, and because of your kindness, you will always be welcome in this magical place."
+
+When Maya returned home, she found Mrs. Chen in her backyard, smiling and healthy, tending to a garden more beautiful than ever before. From that day on, Maya learned that true magic comes from caring for others, and she was never lonely again.`,
+                vocabulary: [
+                    { word: "surrounded", definition: "having something all around" },
+                    { word: "glowing", definition: "giving off a soft, warm light" },
+                    { word: "ancient", definition: "very old, from long ago" },
+                    { word: "centuries", definition: "periods of 100 years" },
+                    { word: "selfless", definition: "caring more about others than yourself" }
+                ],
+                questions: [
+                    {
+                        question: "How was Maya different from other children?",
+                        options: ["She was taller than others", "She preferred to be alone and read", "She couldn't speak well", "She lived in a different house"],
+                        correct: 1
+                    },
+                    {
+                        question: "What led Maya to the magic garden?",
+                        options: ["A map she found", "A path of glowing flower petals", "Her friend showed her", "She followed a rabbit"],
+                        correct: 1
+                    },
+                    {
+                        question: "What was special about the flowers in the garden?",
+                        options: ["They were all the same color", "They had magical properties like glowing and chiming", "They were very small", "They only bloomed at night"],
+                        correct: 1
+                    },
+                    {
+                        question: "What did Maya wish for?",
+                        options: ["To be popular at school", "For Mrs. Chen's health and garden", "To be rich and famous", "To have magical powers"],
+                        correct: 1
+                    },
+                    {
+                        question: "What lesson did Maya learn from this experience?",
+                        options: ["Magic gardens are real", "Wishes always come true", "True magic comes from caring for others", "Being alone is better"],
+                        correct: 2
+                    }
+                ]
+            };
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97558d743013fec1',t:'MTc1NjIzNDYyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
